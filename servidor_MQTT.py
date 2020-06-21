@@ -29,7 +29,7 @@ def on_message(client, userdata, msg):
 
 
 client = mqtt.Client(clean_session=True) #Nueva instancia de cliente
-client.on_connect = on_connect #Se configura la funcion "Handler" cuando suceda la conexion
+client.on_connect = on_connect #MGHP cuando registra una conexion, ejecuta el codigo contenido en on_connect
 client.on_message = on_message #Se configura la funcion "Handler" que se activa al llegar un mensaje a un topic subscrito
 client.username_pw_set(MQTT_USER, MQTT_PASS) #Credenciales requeridas por el broker
 client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
@@ -41,20 +41,21 @@ qos = 2
 
 #Subscripcion simple con tupla (topic,qos)
 client.subscribe(("sensores/6/hum", qos))
+client.subscribe(("test", qos))
 
 #Subscripcion multiple con lista de tuplas
 client.subscribe([("sensores/8/#", qos), ("sensores/+/atm", qos), ("sensores/0/temp", qos)])
 
 
 #Iniciamos el thread (implementado en paho-mqtt) para estar atentos a mensajes en los topics subscritos
-client.loop_start()
+client.loop_start() #se comporta como un hilo tipo demonio
 
 #El thread de MQTT queda en el fondo, mientras en el main loop hacemos otra cosa
 
 try:
     while True:
-        logging.info("olakease")
-        time.sleep(10)
+        logging.info("esperando mensaje de algun cliente")
+        time.sleep(20)
 
 
 except KeyboardInterrupt:
