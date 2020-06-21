@@ -25,7 +25,7 @@ logging.basicConfig(
     )
 
 t1 = threading.Thread( target = s_alive,
-                        args = (ALIVE_CONTINUOUS, ),
+                        args = (ALIVE_PERIOD, ),
                         daemon = True
                         )
 t1.start()
