@@ -41,7 +41,7 @@ qos = 2
 
 #Subscripcion simple con tupla (topic,qos)
 client.subscribe(("sensores/6/hum", qos))
-client.subscribe(("test", qos))
+client.subscribe(("comandos", qos))
 
 #Subscripcion multiple con lista de tuplas
 client.subscribe([("sensores/8/#", qos), ("sensores/+/atm", qos), ("sensores/0/temp", qos)])
