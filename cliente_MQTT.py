@@ -11,7 +11,7 @@ Ejemplo de cliente MQTT: gateway de red de sensores
 
 #Configuracion inicial de logging
 logging.basicConfig(
-    level = logging.INFO, 
+    level = logging.INFO,
     format = '[%(levelname)s] (%(processName)-10s) %(message)s'
     )
 
@@ -22,12 +22,12 @@ DEFAULT_DELAY = 5 #1 minuto
 
 
 #Handler en caso suceda la conexion con el broker MQTT
-def on_connect(client, userdata, flags, rc): 
+def on_connect(client, userdata, flags, rc):
     connectionText = "CONNACK recibido del broker con codigo: " + str(rc)
     logging.info(connectionText)
 
 #Handler en caso se publique satisfactoriamente en el broker MQTT
-def on_publish(client, userdata, mid): 
+def on_publish(client, userdata, mid):
     publishText = "Publicacion satisfactoria"
     logging.debug(publishText)
 
@@ -46,20 +46,16 @@ client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 
 
 #Loop principal: leer los datos de los sensores y enviarlos al broker en los topics adecuados cada cierto tiempo
-try:
-    while True:
+#try:
+    #while True:
+def Send_comando(comando):
+    client.publish("comandos",comando, qos = 0, retain = False)#aqui se coloca a donde se quiere enviar el mensaje y e mensaje
+    logging.info("Los datos han sido enviados al broker")
+    time.sleep(DEFAULT_DELAY)
 
-        client.publish("comandos", "aqui va el codigo exadecimal", qos = 0, retain = False)#aqui se coloca a donde se quiere enviar el mensaje y e mensaje
-        #Para temperatura
+#except KeyboardInterrupt:
+    #logging.warning("Desconectando del broker MQTT...")
 
-        logging.info("Los datos han sido enviados al broker")            
-
-        #Retardo hasta la proxima publicacion de info
-        time.sleep(DEFAULT_DELAY)
-
-except KeyboardInterrupt:
-    logging.warning("Desconectando del broker MQTT...")
-
-finally:
-    client.disconnect()
-    logging.info("Se ha desconectado del broker. Saliendo...")
+#finally:
+    #client.disconnect()
+    #logging.info("Se ha desconectado del broker. Saliendo...")
