@@ -1,5 +1,5 @@
 #Parametros de conexion
-MQTT_HOST = "167.71.243.238" #MGHP direccion de ip a la que nos vamos a conectar
+MQTT_HOST = "localhost"#"167.71.243" #MGHP direccion de ip a la que nos vamos a conectar
 MQTT_PORT = 1883
 
 #Credenciales

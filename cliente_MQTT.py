@@ -1,8 +1,6 @@
 import paho.mqtt.client as paho
 import logging
-import time
 import random
-
 from broker_MQTT_datos import * #Informacion de la conexion
 
 '''
@@ -18,7 +16,6 @@ logging.basicConfig(
 
 
 #Tiempo de espera entre lectura y envio de dato de sensores a broker (en segundos)
-DEFAULT_DELAY = 5 #1 minuto
 
 
 #Handler en caso suceda la conexion con el broker MQTT
@@ -31,10 +28,7 @@ def on_publish(client, userdata, mid):
     publishText = "Publicacion satisfactoria"
     logging.debug(publishText)
 
-
 logging.info("Cliente MQTT con paho-mqtt") #Mensaje en consola
-
-
 '''
 Config. inicial del cliente MQTT
 '''
@@ -44,14 +38,12 @@ client.on_publish = on_publish #Se configura la funcion "Handler" que se activa 
 client.username_pw_set(MQTT_USER, MQTT_PASS) #Credenciales requeridas por el broker
 client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 
-
 #Loop principal: leer los datos de los sensores y enviarlos al broker en los topics adecuados cada cierto tiempo
 #try:
     #while True:
 def Send_comando(comando):
     client.publish("comandos",comando, qos = 0, retain = False)#aqui se coloca a donde se quiere enviar el mensaje y e mensaje
-    logging.info("Los datos han sido enviados al broker")
-    time.sleep(DEFAULT_DELAY)
+    #logging.info("Los datos han sido enviados al broker")
 
 #except KeyboardInterrupt:
     #logging.warning("Desconectando del broker MQTT...")
