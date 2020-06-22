@@ -6,11 +6,35 @@ from broker_MQTT_datos import * #Informacion de la conexion
 
 LOG_FILENAME = 'mqtt.log'
 
+CLIENTE_ACTIVO: "comandos/12/#" #MGHP TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
+
+#MGHP nombre del archivo que contiene a los usuarios
+usuarios='topics_usuarios.txt'
+
+
+def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los clientes
+    datos=[]
+
+    archivo = open(usuarios, 'r')
+    for linea in archivo:
+        registro=linea.split(',')
+        registro[-1]=registro[-1].split('\n')[0]
+        datos.append(registro)
+    archivo.close()
+
+    for i in datos:
+        logging.info(i[:])
+
+
+
 #Configuracion inicial de logging
 logging.basicConfig(
     level = logging.INFO, 
     format = '[%(levelname)s] (%(threadName)-10s) %(message)s'
     )
+
+
+llama_usuarios() #MGHP llama a la funcion que extrae la informacion del documento donde estan los clientes
 
 #Callback que se ejecuta cuando nos conectamos al broker
 def on_connect(client, userdata, rc):
@@ -47,10 +71,11 @@ client.subscribe(("comandos", qos))
 client.subscribe([("sensores/8/#", qos), ("sensores/+/atm", qos), ("sensores/0/temp", qos)])
 
 
-#Iniciamos el thread (implementado en paho-mqtt) para estar atentos a mensajes en los topics subscritos
+#MGHP subscripcion para poder recibir los alives de los clientes
+client.subscribe((CLIENTE_ACTIVO, qos))
+
 client.loop_start() #se comporta como un hilo tipo demonio
 
-#El thread de MQTT queda en el fondo, mientras en el main loop hacemos otra cosa
 
 try:
     while True:
