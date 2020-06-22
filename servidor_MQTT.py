@@ -6,11 +6,10 @@ from broker_MQTT_datos import * #Informacion de la conexion
 
 LOG_FILENAME = 'mqtt.log'
 
-CLIENTE_ACTIVO= "comandos/12/" #MGHP TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
+CLIENTE_ACTIVO= "comandos/12/" #MGHP parte inicial del TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
 ACK=b"x05" #MGHP constaste para responder a los alives
 #MGHP nombre del archivo que contiene a los usuarios
-usuarios='topics_usuarios.txt'
-
+usuarios='topics_usuarios.txt' # MGHP variable que representa el archivo donde se tienen guardado los usuarios
 
 
 
@@ -38,9 +37,6 @@ logging.basicConfig(
     )
 
 
-llama_usuarios() #MGHP llama a la funcion que extrae la informacion del documento donde estan los clientes
-
-
 def on_publish(client, userdata, mid):#MGHP para confirmacion de publicacion exitosa
     publishText = "Publicacion satisfactoria"
     logging.debug(publishText)
@@ -55,8 +51,8 @@ def on_connect(client, userdata, rc):
 def on_message(client, userdata, msg):
     #Se muestra en pantalla informacion que ha llegado
 
-    #logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
-    #logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
+    logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
+    logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
 
     if msg.topic=="comandos/12": #MGHP condicion para verificar si esta llegando un comando
         logging.info("estoy recibiendo un comando") #MGHP muestra que si estoy recibiendo un comando
@@ -90,10 +86,13 @@ def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para pode
         logging.info(i[:])
 
     #dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
-    for j in range(len(datos)):
-        client.subscribe((CLIENTE_ACTIVO+datos[j],qos))
-        logging.info(datos[j])
+    logging.info("estamos subcritos a los siguiente topics: \n")
+    for j in range(len(registro)):
+        client.subscribe((CLIENTE_ACTIVO+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
+        logging.info(str(j)+" " +CLIENTE_ACTIVO+str(registro[j]))
 
+
+llama_usuarios() #MGHP llama a la funcion que extrae la informacion del documento donde estan los clientes
 #Nos conectaremos a distintos topics:
 
 
