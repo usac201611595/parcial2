@@ -36,7 +36,7 @@ def recepcion(contenidom):
 
     #for i in datos2:
     logging.info(datos2)
-    #client.publish("comandos/12/201112345","mensaje exitoso", qos = 0, retain = False)
+    client.publish("comandos/12/201112345","mensaje exitoso", qos = 0, retain = False)
 
 
 
@@ -71,7 +71,7 @@ def on_message(client, userdata, msg):
 
     if msg.topic=="comandos/12": #MGHP condicion para verificar si esta llegando un comando
         logging.info("estoy recibiendo un comando") #MGHP muestra que si estoy recibiendo un comando
-    recepcion(msg.payload) #MGHP llamo a la funcion para poder partir la informacion
+        recepcion(msg.payload) #MGHP llamo a la funcion para poder partir la informacion
 
     
     #Y se almacena en el log 
