@@ -6,24 +6,13 @@ from broker_MQTT_datos import * #Informacion de la conexion
 
 LOG_FILENAME = 'mqtt.log'
 
-CLIENTE_ACTIVO= "comandos/12/#" #MGHP TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
+CLIENTE_ACTIVO= "comandos/12/" #MGHP TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
 ACK=b"x05" #MGHP constaste para responder a los alives
 #MGHP nombre del archivo que contiene a los usuarios
 usuarios='topics_usuarios.txt'
 
 
-def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los clientes
-    datos=[]
 
-    archivo = open(usuarios, 'r')
-    for linea in archivo:
-        registro=linea.split(',')
-        registro[-1]=registro[-1].split('\n')[0]
-        datos.append(registro)
-    archivo.close()
-
-    for i in datos:
-        logging.info(i[:])
 
 
 #funcion que guarda la informacion recibida de los alives.
@@ -86,18 +75,36 @@ client.username_pw_set(MQTT_USER, MQTT_PASS) #Credenciales requeridas por el bro
 client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 
 
+def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
+    qos = 2
+    datos=[]
+
+    archivo = open(usuarios, 'r')
+    for linea in archivo:
+        registro=linea.split(',')
+        registro[-1]=registro[-1].split('\n')[0]
+        datos.append(registro)
+    archivo.close()
+
+    for i in datos:
+        logging.info(i[:])
+
+    #dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
+    for j in range(len(datos)):
+        client.subscribe((CLIENTE_ACTIVO+datos[j],qos))
+        logging.info(datos[j])
 
 #Nos conectaremos a distintos topics:
-qos = 2
+
 
 #Subscripcion simple con tupla (topic,qos)
-client.subscribe(("comandos", qos))
+#client.subscribe(("comandos", qos))
 
 #Subscripcion multiple con lista de tuplas
 
 
 #MGHP subscripcion para poder recibir los alives de los clientes
-client.subscribe((CLIENTE_ACTIVO, qos))
+#client.subscribe((CLIENTE_ACTIVO, qos))
 
 client.loop_start() #se comporta como un hilo tipo demonio
 
