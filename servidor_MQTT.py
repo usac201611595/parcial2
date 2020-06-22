@@ -29,8 +29,18 @@ def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para pode
 #funcion que guarda la informacion recibida de los alives.
 def recepcion(contenidom):
     print("si estoy en la funcion")
-    la_info=contenidom
-    logging.info(str(la_info))
+    la_info=str(contenidom)
+    logging.info(la_info)
+
+    datos2=[]
+    for linea in la_info:
+        registro2=linea.split('$')
+        registro2[-1]=registro2[-1].split('\n')[0]
+        datos2.append(registro2)
+
+    for i in datos2:
+        logging.info(i[:])
+
 
 
 
@@ -53,12 +63,13 @@ def on_connect(client, userdata, rc):
 #Callback que se ejecuta cuando llega un mensaje al topic suscrito
 def on_message(client, userdata, msg):
     #Se muestra en pantalla informacion que ha llegado
-    logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
-    logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
 
-    if msg.topic=="comandos/12":
-        logging.info("estoy recibiendo un comando")
-    recepcion(msg.payload)
+    #logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
+    #logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
+
+    if msg.topic=="comandos/12": #MGHP condicion para verificar si esta llegando un comando
+        logging.info("estoy recibiendo un comando") #MGHP muestra que si estoy recibiendo un comando
+    recepcion(msg.payload) #MGHP llamo a la funcion para poder partir la informacion
 
     
     #Y se almacena en el log 
