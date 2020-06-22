@@ -33,7 +33,7 @@ t1.start()
 
 
 
-
+Subcribir(str(USERID))
 
 cnt = 0
 try:
@@ -45,6 +45,7 @@ try:
             if N=="a":#GAMS
                 N=input("\n ingrese el numero de usuario :")#GAMS
                 data=input("\ningrese su mensaje :")#GAMS
+                Send_comando(N,deta)
                 logging.info('\n Enviando a: {!s}'.format(N))#GAMS
             elif N=="b":#GAMS
                 N=input("\n"+b'ingrese el numero de sala :')#GAMS
@@ -61,7 +62,7 @@ try:
             elif N=="b":#GAMS
                 N=input("ingrese el numero de sala :")#GAMS
                 data=input("\n cuanto tiempo desea grabar (segundos) :")#GAMS
-                Send_comando(C_FTR+b'$'+N.encode("utf-8")+b'$'+b'120')#GAMS
+                Send_comando( C_FTR+b'$'+N.encode("utf-8")+b'$'+b'120')#GAMS
                 logging.info('\n Enviando a: {!s}'.format(N))#GAMS
         elif N=="e" or N=="E":#GAMS
             break#GAMS
