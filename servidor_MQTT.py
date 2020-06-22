@@ -7,7 +7,7 @@ from broker_MQTT_datos import * #Informacion de la conexion
 LOG_FILENAME = 'mqtt.log'
 
 CLIENTE_ACTIVO= "comandos/12/#" #MGHP TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
-
+ACK=b"x05" #MGHP constaste para responder a los alives
 #MGHP nombre del archivo que contiene a los usuarios
 usuarios='topics_usuarios.txt'
 
@@ -29,14 +29,14 @@ def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para pode
 #funcion que guarda la informacion recibida de los alives.
 def recepcion(contenidom):
     print("si estoy en la funcion")
-    la_info=str(contenidom)
-    logging.info(la_info)
+    la_info=contenidom
+    logging.info(str(la_info))
 
-    datos2=la_info.split('$')
+    datos2=la_info.split(b'$')
 
     #for i in datos2:
     logging.info(datos2)
-    client.publish("comandos/12/201112345","mensaje exitoso", qos = 0, retain = False)
+    client.publish("comandos/12/201611595",ACK, qos = 0, retain = False)
 
 
 
