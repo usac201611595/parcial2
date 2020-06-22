@@ -29,14 +29,14 @@ def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para pode
 #funcion que guarda la informacion recibida de los alives.
 def recepcion(contenidom):
     print("si estoy en la funcion")
-    la_info=str(contenidom)
+    la_info=contenidom
     logging.info(la_info)
 
     datos2=la_info.split('$')
 
     #for i in datos2:
     logging.info(datos2)
-
+    client.publish("comandos/12/201112345","mensaje exitoso", qos = 0, retain = False)
 
 
 
@@ -50,6 +50,12 @@ logging.basicConfig(
 
 
 llama_usuarios() #MGHP llama a la funcion que extrae la informacion del documento donde estan los clientes
+
+
+def on_publish(client, userdata, mid):#MGHP para confirmacion de publicacion exitosa
+    publishText = "Publicacion satisfactoria"
+    logging.debug(publishText)
+
 
 #Callback que se ejecuta cuando nos conectamos al broker
 def on_connect(client, userdata, rc):
