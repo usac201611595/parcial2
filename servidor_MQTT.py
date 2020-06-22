@@ -66,8 +66,8 @@ def on_connect(client, userdata, rc):
 def on_message(client, userdata, msg):
     #Se muestra en pantalla informacion que ha llegado
 
-    logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
-    logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
+    #logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
+    #logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
 
     if msg.topic=="comandos/12": #MGHP condicion para verificar si esta llegando un comando
         logging.info("estoy recibiendo un comando") #MGHP muestra que si estoy recibiendo un comando
@@ -91,11 +91,9 @@ client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 qos = 2
 
 #Subscripcion simple con tupla (topic,qos)
-client.subscribe(("sensores/6/hum", qos))
 client.subscribe(("comandos", qos))
 
 #Subscripcion multiple con lista de tuplas
-client.subscribe([("sensores/8/#", qos), ("sensores/+/atm", qos), ("sensores/0/temp", qos)])
 
 
 #MGHP subscripcion para poder recibir los alives de los clientes
