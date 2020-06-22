@@ -6,7 +6,7 @@ from broker_MQTT_datos import * #Informacion de la conexion
 
 LOG_FILENAME = 'mqtt.log'
 
-CLIENTE_ACTIVO: "comandos/12/#" #MGHP TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
+CLIENTE_ACTIVO= "comandos/12/#" #MGHP TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
 
 #MGHP nombre del archivo que contiene a los usuarios
 usuarios='topics_usuarios.txt'
