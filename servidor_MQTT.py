@@ -32,12 +32,10 @@ def recepcion(contenidom):
     la_info=str(contenidom)
     logging.info(la_info)
 
-    datos2=[]
-    for linea in la_info:
-        datos2.append(linea.split('$'))
+    datos2=la_info.split('$')
 
     #for i in datos2:
-    logging.info(datos2[:])
+    logging.info(datos2)
 
 
 
