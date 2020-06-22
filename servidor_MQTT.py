@@ -29,7 +29,7 @@ def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para pode
 #funcion que guarda la informacion recibida de los alives.
 def recepcion(contenidom):
     print("si estoy en la funcion")
-    la_info=contenidom
+    la_info=str(contenidom)
     logging.info(la_info)
 
     datos2=la_info.split('$')
