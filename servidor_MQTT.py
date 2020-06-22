@@ -6,8 +6,10 @@ from broker_MQTT_datos import * #Informacion de la conexion
 
 LOG_FILENAME = 'mqtt.log'
 
-CLIENTE_ACTIVO= "comandos/12/" #MGHP parte inicial del TOPIC donde se recibiran los alives de los cliente para determinar si estan activos
+CLIENTES= "comandos/12/" #MGHP parte inicial del TOPIC donde se recibiran las peticiones de los usuarios 
+CLIENTE_ALIVE= "comandos/12" #MGHP topic para recibir comandos alives
 ACK=b"x05" #MGHP constaste para responder a los alives
+
 #MGHP nombre del archivo que contiene a los usuarios
 usuarios='topics_usuarios.txt' # MGHP variable que representa el archivo donde se tienen guardado los usuarios
 
@@ -15,17 +17,20 @@ usuarios='topics_usuarios.txt' # MGHP variable que representa el archivo donde s
 
 
 #funcion que guarda la informacion recibida de los alives.
-def recepcion(contenidom):
-    print("si estoy en la funcion")
+def recepcion(topic,contenidom):
+    logging.info("si estoy en la funcion")
+
+    #MGHP aqui empezamos a partir la informacion
     la_info=contenidom
     logging.info(str(la_info))
 
     datos2=la_info.split(b'$')
 
-    #for i in datos2:
     logging.info(datos2)
-    client.publish("comandos/12/201611595",ACK, qos = 0, retain = False)
 
+    if topic=="comandos/12" and datos2[0]==b'\x04': #MGHP condicion para verificar el ALIVE
+        logging.info("estoy recibiendo un alive de: " + str(datos2[1]))
+        #client.publish("comandos/12/201611595",ACK, qos = 0, retain = False)#MGHP reenviamos la confirmacion del alive
 
 
 
@@ -54,9 +59,9 @@ def on_message(client, userdata, msg):
     logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
     logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
 
-    if msg.topic=="comandos/12": #MGHP condicion para verificar si esta llegando un comando
-        logging.info("estoy recibiendo un comando") #MGHP muestra que si estoy recibiendo un comando
-        recepcion(msg.payload) #MGHP llamo a la funcion para poder partir la informacion
+    #if msg.topic=="comandos/12": #MGHP condicion para verificar el ALIVE
+        #logging.info("estoy recibiendo un alive: ") #MGHP muestra que si estoy recibiendo un comando
+    recepcion(msg.topic,msg.payload) #MGHP llamo a la funcion para poder partir la informacion
 
     
     #Y se almacena en el log 
@@ -88,22 +93,14 @@ def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para pode
     #dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
     logging.info("estamos subcritos a los siguiente topics: \n")
     for j in range(len(registro)):
-        client.subscribe((CLIENTE_ACTIVO+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
-        logging.info(str(j)+" " +CLIENTE_ACTIVO+str(registro[j]))
+        client.subscribe((CLIENTES+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
+        logging.info(str(j)+" " +CLIENTES+str(registro[j]))
 
 
 llama_usuarios() #MGHP llama a la funcion que extrae la informacion del documento donde estan los clientes
-#Nos conectaremos a distintos topics:
-
-
-#Subscripcion simple con tupla (topic,qos)
-#client.subscribe(("comandos", qos))
-
-#Subscripcion multiple con lista de tuplas
-
 
 #MGHP subscripcion para poder recibir los alives de los clientes
-#client.subscribe((CLIENTE_ACTIVO, qos))
+client.subscribe((CLIENTE_ALIVE, 2))
 
 client.loop_start() #se comporta como un hilo tipo demonio
 
