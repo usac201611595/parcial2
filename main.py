@@ -1,13 +1,12 @@
 import threading #Concurrencia con hilos
 import time      #Retardos
 import sys
-
 import logging#GAMS
 #####GAMS BLOQUES NECESARIOS
 import binascii#GAMS
 from cliente_MQTT import *  #GAMS
 from Cliente_pr12 import * ##GAMS importa los parametros de conexion
-
+from control_cliente import *#GAMS
 
 
 #def alive(delay):
@@ -16,7 +15,7 @@ from Cliente_pr12 import * ##GAMS importa los parametros de conexion
 #        time.sleep(delay)
 def s_alive(delay = 1):
     while True:
-        Send_comando(C_ALIVE+b'$'+USERID)
+        Send_comando(comando,USERID,C_ALIVE+b'$'+USERID)
         time.sleep(delay) #Delay en segundos
 
 logging.basicConfig(
@@ -33,36 +32,37 @@ t1.start()
 
 
 
-Subcribir(str(USERID))
+Subcribir()
 
 cnt = 0
 try:
     while True: #GAMS
     #------------------------tratamineto de mensajes -------------------------------------------
-        N=input('\n Para enviar un mensaje escriba "A" para enviar a un audio escriba "B" para salir escriba "E" :')#GAMS
+        N=input('\n enviar mensaje:"a", envia audio :"B" salir:"E" :')#GAMS
         if N=="a" or N=="A":#GAMS
-            N=input('\n desea enviar a usuario escriba "a" o sala escriba "b" :')#GAMS
+            N=input('\n escbirir a usuario:"a", escribir sala:"b" :')#GAMS
             if N=="a":#GAMS
-                N=input("\n ingrese el numero de usuario :")#GAMS
-                data=input("\ningrese su mensaje :")#GAMS
-                Send_comando(N,deta)
-                logging.info('\n Enviando a: {!s}'.format(N))#GAMS
-            elif N=="b":#GAMS
-                N=input("\n"+b'ingrese el numero de sala :')#GAMS
-                data=input("\ningrese su mensaje por favor :")#GAMS
+                N=input("\ncaré destino :")#GAMS
+                data=input("Mensaje :")#GAMS
+                Send_comando(user,N.encode("utf-8"),data)#GAMS
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
+            elif N=="b":#GAMS
+                N=input("No. sala :")#GAMS
+                data=input("Mensaje :")#GAMS#GAMS
+                Send_comando(user,N.encode("utf-8"),data)#GAMS
+                logging.info('\n Enviando a: {!s}'.format(N))#GAMS
         elif N=="b" or N=="B":#GAMS
     #-------------------------tratamiento de audio-------------------------------------------
             N=input('\n desea enviar a usuario escriba "a" o sala escriba "b" :')#GAMS
             if N=="a":#GAMS
-                N=input("\ningrese el numero de usuario :")#GAMS
-                data=input("cuanto tiempo desea grabar (segundos) :")#GAMS
-                Send_comando(C_FTR+b'$'+N.encode("utf-8")+b'$'+b'120')#GAMS
+                N=input("\ncaré destino :")#GAMS
+                data=input("tiempo a grabar(segundos) :")#GAMS
+                Send_comando(comando,USERID,C_FTR+b'$'+N.encode("utf-8")+b'$'+b'120')#GAMS
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
             elif N=="b":#GAMS
-                N=input("ingrese el numero de sala :")#GAMS
-                data=input("\n cuanto tiempo desea grabar (segundos) :")#GAMS
-                Send_comando( C_FTR+b'$'+N.encode("utf-8")+b'$'+b'120')#GAMS
+                N=input("No. sala :")#GAMS
+                data=input("tiempo a grabar(segundos) :")#GAMS
+                Send_comando(comando,USERID,C_FTR+b'$'+N.encode("utf-8")+b'$'+b'120')#GAMS
                 logging.info('\n Enviando a: {!s}'.format(N))#GAMS
         elif N=="e" or N=="E":#GAMS
             break#GAMS

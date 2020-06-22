@@ -1,14 +1,14 @@
 import paho.mqtt.client as mqtt
 import logging
 import time
-import os 
+import os
 from broker_MQTT_datos import * #Informacion de la conexion
 
 LOG_FILENAME = 'mqtt.log'
 
 #Configuracion inicial de logging
 logging.basicConfig(
-    level = logging.INFO, 
+    level = logging.INFO,
     format = '[%(levelname)s] (%(threadName)-10s) %(message)s'
     )
 
@@ -22,8 +22,8 @@ def on_message(client, userdata, msg):
     #Se muestra en pantalla informacion que ha llegado
     logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))
     logging.info("El contenido del mensaje es: " + str(msg.payload))
-    
-    #Y se almacena en el log 
+
+    #Y se almacena en el log
     logCommand = 'echo "(' + str(msg.topic) + ') -> ' + str(msg.payload) + '" >> ' + LOG_FILENAME
     os.system(logCommand)
 
@@ -41,8 +41,10 @@ qos = 2
 
 #Subscripcion simple con tupla (topic,qos)
 client.subscribe(("sensores/6/hum", qos))
-client.subscribe(("comandos", qos))
-
+#client.subscribe(("comandos/12/201611595", qos))
+client.subscribe(("comandos/12/201611595", qos))
+client.subscribe(("usuario/12/201612268", qos))
+client.subscribe(("usuario/12/201611595", qos))
 #Subscripcion multiple con lista de tuplas
 client.subscribe([("sensores/8/#", qos), ("sensores/+/atm", qos), ("sensores/0/temp", qos)])
 
