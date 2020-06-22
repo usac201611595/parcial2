@@ -36,7 +36,7 @@ def recepcion(contenidom):
 
     #for i in datos2:
     logging.info(datos2)
-    client.publish("comandos/12/201112345","mensaje exitoso", qos = 0, retain = False)
+    #client.publish("comandos/12/201112345","mensaje exitoso", qos = 0, retain = False)
 
 
 
