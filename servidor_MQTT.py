@@ -27,6 +27,8 @@ def recepcion(topic,contenidom):
     datos2=la_info.split(b'$')
 
     logging.info(datos2)
+    logging.info(datos2[0])
+    logging.info(datos2[1])
 
     if topic=="comandos/12" and datos2[0]==b'\x04': #MGHP condicion para verificar el ALIVE
         logging.info("estoy recibiendo un alive de: " + str(datos2[1]))
