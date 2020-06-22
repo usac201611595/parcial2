@@ -9,7 +9,7 @@ LOG_FILENAME = 'mqtt.log'
 CLIENTES= "comandos/12/" #MGHP parte inicial del TOPIC donde se recibiran las peticiones de los usuarios 
 CLIENTE_ALIVE= "comandos/12" #MGHP topic para recibir comandos alives
 ACK=b"x05" #MGHP constaste para responder a los alives
-
+SEP = b'$'
 #MGHP nombre del archivo que contiene a los usuarios
 usuarios='topics_usuarios.txt' # MGHP variable que representa el archivo donde se tienen guardado los usuarios
 
@@ -32,7 +32,9 @@ def recepcion(topic,contenidom):
 
     if topic=="comandos/12" and datos2[0]==b'\x04': #MGHP condicion para verificar el ALIVE
         logging.info("estoy recibiendo un alive de: " + str(datos2[1]))
-        #client.publish("comandos/12/201611595",ACK, qos = 0, retain = False)#MGHP reenviamos la confirmacion del alive
+        alive_retorno=ACK+SEP+datos2[1]
+        logging.info("enviando ALIVE retorno:" + str(alive_retorno))
+        client.publish("comandos/12",alive_retorno, qos = 0, retain = False)#MGHP reenviamos la confirmacion del alive
 
 
 
