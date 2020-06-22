@@ -66,8 +66,8 @@ def on_connect(client, userdata, rc):
 def on_message(client, userdata, msg):
     #Se muestra en pantalla informacion que ha llegado
 
-    #logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
-    #logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
+    logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))#MGHP a que topic llego el mensaje
+    logging.info("El contenido del mensaje es: " + str(msg.payload)) #MGHP cual es el contenido del mensaje
 
     if msg.topic=="comandos/12": #MGHP condicion para verificar si esta llegando un comando
         logging.info("estoy recibiendo un comando") #MGHP muestra que si estoy recibiendo un comando
