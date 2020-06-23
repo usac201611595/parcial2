@@ -3,7 +3,7 @@ import logging
 import random
 from broker_MQTT_datos import * #Informacion de la conexion
 import binascii#GAMS
-
+import os
 '''
 Ejemplo de cliente MQTT: gateway de red de sensores
 '''
@@ -36,13 +36,12 @@ def recepcion(topic,contenidom):
     if eltopic[0]=="audio": #and datos2[0]==b'\x04': #MGHP condicion para verificar el ALIVE
         print("recibiendo auido")
         archivo = open('201611595_client.wav', 'wb')
-        archivo.write(la_info) #GAMS Los bloques se van agregando al archivo
-        logging.info('Grabacion finalizada, inicia reproduccion')#GAMS
-        os.system('aplay 201611595_client.wav')#GAMS
+        archivo.write(la_info) #Los bloques se van agregando al archivo
+        logging.info('Grabacion finalizada, inicia reproduccion')
+        os.system('aplay 201611595_client.wav')
     else:
         datos2=la_info.split(b'$')
         print(datos2[0].decode("utf-8")+":"+datos2[1].decode("utf-8"))
-    #if topic=="comandos/12" and datos2[0]==b'\x04': #MGHP condicion para verificar el ALIVE
         #logging.info("estoy recibiendo un alive de: " + str(datos2[1]))
 
 
@@ -61,6 +60,7 @@ def on_publish(client, userdata, mid):
 
 #--------------------------GAMS.----------------------------
 def on_message(client, userdata, msg):
+    #logging.info("El remitente: " + str(msg.topic))
     recepcion(msg.topic,msg.payload) #MGHP llamo a la funcion para poder partir la informacion
 
 logging.info("Cliente MQTT con paho-mqtt") #Mensaje en consola
@@ -79,7 +79,7 @@ client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 
 def Subcribir():
 #    client.subscribe([("usuario/12/201611595",0),("salas/12/2s23",0),("comandos/12/201611595",0),("comandos/12",0)])
-    client.subscribe([("usuario/12/201611595",0),("salas/12/2s23",0),("audio/12/201611595",0)])
+    client.subscribe([("usuario/12/201602613",0),("salas/12/2s23",0),("audio/12/201602613",0)])
     client.loop_start()
     #while True:
 def Send_comando(topicRoot,topicName,value):

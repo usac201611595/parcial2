@@ -10,7 +10,7 @@ C_OK = b'\x06' # LARP 'indicador' de que el CLIENTE puede enviar el archivo pues
 C_NO = b'\x07' # LARP 'indicador' de NEGACION, a) si el REMITENTE o DESTINO no sena VALIDOS, el remitente SOLO lo tomara VALIDO si tiene su USER-ID
 
 #System filenames
-USERID= b'201611595'#GAMS
+USERID= b'201602613'#GAMS
 sala='sala'
 user='usuario'
 comando='comandos'
