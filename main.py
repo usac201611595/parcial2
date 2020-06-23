@@ -15,7 +15,7 @@ from Cliente_pr12 import * ##GAMS importa los parametros de conexion
 #    while True:
 #        Send_comando(C_ALIVE+USERID)
 #        time.sleep(delay)
-Subcribir()
+#Subcribir()
 #def s_alive(delay = 1):
 #    while True:
 #        #a.imprimir()

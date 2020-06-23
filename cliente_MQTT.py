@@ -4,6 +4,12 @@ import random
 from broker_MQTT_datos import * #Informacion de la conexion
 import binascii#GAMS
 
+TOPICS_AUDIO= "audio/20/" #MGHP parte inicial del TOPIC donde se recibiran los audios
+TOPICS_CHAT="usuario/12/"
+#MGHP nombre del archivo que contiene a los usuarios
+usuarios='usuarios.txt' # MGHP variable que representa el archivo donde se tienen guardado los usuarios
+salas='salas.txt'
+
 '''
 Ejemplo de cliente MQTT: gateway de red de sensores
 '''
@@ -12,6 +18,7 @@ logging.basicConfig(
     level = logging.INFO,
     format = '[%(levelname)s] (%(processName)-10s) %(message)s'
     )
+
 #class Negocia(object):
 #    def __init__(self,topic,contenidom):#GAMS
 #        self.topic=str(topic)#GAMS
@@ -76,11 +83,41 @@ client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 
 #Loop principal: leer los datos de los sensores y enviarlos al broker en los topics adecuados cada cierto tiempo
 #try:
+def llama_subscripciones(topicsss,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
+    qos = 2
+    datos=[]
 
-def Subcribir():
-#    client.subscribe([("usuario/12/201611595",0),("salas/12/2s23",0),("comandos/12/201611595",0),("comandos/12",0)])
-    client.subscribe([("usuario/12/201611595",0),("salas/12/2s23",0),("audio/12/201611595",0)])
-    client.loop_start()
+    archivo = open(contenidos, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
+    for linea in archivo:
+        registro=linea.split(',')
+        registro[-1]=registro[-1].split('\n')[0]
+        datos.append(registro)
+    archivo.close()
+
+    #for i in datos:
+        #logging.info(i[:])
+
+    #MGHP dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
+
+    for j in range(len(registro)):
+        client.subscribe((topicsss+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
+        client.loop_start()
+        logging.info(topicsss+str(registro[j]))# MGHP mostramos a que topics estamos susbcritos de los clientes
+
+logging.info("subscribiendo a topics: ")
+logging.info("PARA AUDIO: ")
+#llama a la funcion que extrae la informacion de los documentos que contienen las salas y usuarios
+llama_subscripciones(TOPICS_AUDIO,usuarios) #MGHP se subscribe a rececpion de audios de usuarios
+llama_subscripciones(TOPICS_AUDIO,salas) #MGHP se subcribe recepcion de audios en salas
+logging.info("PARA CHAT: ")
+llama_subscripciones(TOPICS_CHAT,usuarios)#MGHP se subscribe a recepcion de chats en usuarios
+llama_subscripciones(TOPICS_CHAT,salas)#MGHP se subscribe a recepcion de chats en salas.
+
+logging.info("subscripcion exitosa")
+client.loop_start()
+
+
+
     #while True:
 def Send_comando(topicRoot,topicName,value):
     topic = str(topicRoot) + "/12/" + str(topicName.decode("utf-8"))
