@@ -53,7 +53,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
         logging.info('Grabacion finalizada, inicia reproduccion') # LARP mensaje al finalizar
         os.system('aplay ' + entrada) #LARP ejecutar en consola con aplay
         time.sleep (num)
-        
+
 #class Negocia(object):
 #    def __init__(self,topic,contenidom):#GAMS
 #        self.topic=str(topic)#GAMS
@@ -130,8 +130,6 @@ llama_subscripciones(TOPICS_CHAT,salas)#MGHP se subscribe a recepcion de chats e
 
 logging.info("subscripcion exitosa")
 client.loop_start()
-
-
 
     #while True:
 def Send_comando(topicRoot,topicName,value):
