@@ -3,8 +3,7 @@ import logging
 import random
 from broker_MQTT_datos import * #Informacion de la conexion
 import binascii#GAMS
-import os   # LARP para utilizar la consola, enviar comandos
-import time # LARP libreria para definir nombre en formato timestamp UNIX (epoch) #Retardos
+
 
 # LARP Configuracion inicial de logging
 logging.basicConfig(
@@ -37,7 +36,6 @@ def recepcion(topic,contenidom):
         nombre = str(int(time.time())) + '.wav' #LARP nombre de archivo, hora actual, timestamp
         archivo = open( nombre , 'wb') #LARP apertura y creacion del archivo de audio
         archivo.write(la_info) # LARP Los bloques se van agregando al archivo
-
         t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
                             target = hiloReproducion,
                             args = ((nombre, 31)),
