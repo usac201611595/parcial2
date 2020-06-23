@@ -49,10 +49,33 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
         datos2=la_info.split(b'$')
         print(datos2[0].decode("utf-8")+":"+datos2[1].decode("utf-8"))
 
-    def hiloReproducion(entrada, num): #LARP 'funcion del hilo Reproduccion de fondo'
+    def hiloReproducion(self, entrada, num): #LARP 'funcion del hilo Reproduccion de fondo'
         logging.info('Grabacion finalizada, inicia reproduccion') # LARP mensaje al finalizar
         os.system('aplay ' + entrada) #LARP ejecutar en consola con aplay
         time.sleep (num)
+    
+    #Loop principal: leer los datos de los sensores y enviarlos al broker en los topics adecuados cada cierto tiempo
+    #try:
+    def llama_subscripciones(self, topicsss,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
+        qos = 2
+        datos=[]
+
+        archivo = open(contenidos, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
+        for linea in archivo:
+            registro=linea.split(',')
+            registro[-1]=registro[-1].split('\n')[0]
+            datos.append(registro)
+        archivo.close()
+
+class tiempoInvalido(Exception):
+    def __init__(self):
+        pass
+    def __str__(self):
+        return str("El tiempo debe ser menor a 31 segundos y almenos 1 segundo")
+
+    def __repr__(self):
+        return self.__str__()
+
 
 #class Negocia(object):
 #    def __init__(self,topic,contenidom):#GAMS
@@ -70,7 +93,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
 
 # Tiempo de espera entre lectura y envio de dato de sensores a broker (en segundos)
 
-
+""" ==================================# LARP por defecto MQTT =================================== """
 # LARP Handler en caso suceda la conexion con el broker MQTT
 def on_connect(client, userdata, flags, rc):
     connectionText = "CONNACK recibido del broker con codigo: " + str(rc)
@@ -85,29 +108,18 @@ def on_publish(client, userdata, mid):
 def on_message(client, userdata, msg):
     recepcion(msg.topic,msg.payload) #MGHP llamo a la funcion para poder partir la informacion
 
+""" ================================== #LARP por defecto MQTT =================================== """
+
 logging.info("Cliente MQTT con paho-mqtt") #Mensaje en consola
-'''
-Config. inicial del cliente MQTT
-'''
+
+''' #LARP Config. inicial del cliente MQTT '''
+
 client = paho.Client(clean_session=True) #Nueva instancia de cliente
 client.on_connect = on_connect #Se configura la funcion "Handler" cuando suceda la conexion
 client.on_publish = on_publish #Se configura la funcion "Handler" que se activa al publicar algo
 client.on_message = on_message
 client.username_pw_set(MQTT_USER, MQTT_PASS) #Credenciales requeridas por el broker
 client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
-
-#Loop principal: leer los datos de los sensores y enviarlos al broker en los topics adecuados cada cierto tiempo
-#try:
-def llama_subscripciones(topicsss,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
-    qos = 2
-    datos=[]
-
-    archivo = open(contenidos, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
-    for linea in archivo:
-        registro=linea.split(',')
-        registro[-1]=registro[-1].split('\n')[0]
-        datos.append(registro)
-    archivo.close()
 
     #for i in datos:
         #logging.info(i[:])
