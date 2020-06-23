@@ -3,11 +3,10 @@ import logging
 import random
 from broker_MQTT_datos import * #Informacion de la conexion
 import binascii#GAMS
-import os
-'''
-Ejemplo de cliente MQTT: gateway de red de sensores
-'''
-#Configuracion inicial de logging
+import os   # LARP para utilizar la consola, enviar comandos
+import time # LARP libreria para definir nombre en formato timestamp UNIX (epoch) #Retardos
+
+# LARP Configuracion inicial de logging
 logging.basicConfig(
     level = logging.INFO,
     format = '[%(levelname)s] (%(processName)-10s) %(message)s'
@@ -32,28 +31,37 @@ def recepcion(topic,contenidom):
 
     #daT=Negocia(eltopic,datos2[0],datos2[1].decode("utf-8"))
     #logging.info(str(daT.ACK()))
+    nombre = ''
+    if eltopic[0]=="audio": # LARP condicion, si pertenece al topic audios, guarda el audio
+        print("recibiendo audio")
+        nombre = str(int(time.time())) + '.wav' #LARP nombre de archivo, hora actual, timestamp
+        archivo = open( nombre , 'wb') #LARP apertura y creacion del archivo de audio
+        archivo.write(la_info) # LARP Los bloques se van agregando al archivo
 
-    if eltopic[0]=="audio": #and datos2[0]==b'\x04': #MGHP condicion para verificar el ALIVE
-        print("recibiendo auido")
-        archivo = open('201611595_client.wav', 'wb')
-        archivo.write(la_info) #Los bloques se van agregando al archivo
-        logging.info('Grabacion finalizada, inicia reproduccion')
-        os.system('aplay 201611595_client.wav')
+        t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
+                            target = hiloReproducion,
+                            args = ((nombre, 31)),
+                            daemon = True
+                            )
+        t1.start()
     else:
         datos2=la_info.split(b'$')
         print(datos2[0].decode("utf-8")+":"+datos2[1].decode("utf-8"))
         #logging.info("estoy recibiendo un alive de: " + str(datos2[1]))
 
+def hiloReproducion(entrada, num): #LARP 'funcion del hilo Reproduccion de fondo'
+    logging.info('Grabacion finalizada, inicia reproduccion') # LARP mensaje al finalizar
+    os.system('aplay ' + entrada) #LARP ejecutar en consola con aplay
+    time.sleep (num)
 
-#Tiempo de espera entre lectura y envio de dato de sensores a broker (en segundos)
+# LARP Funciones por defecto. Tiempo de espera entre lectura y envio de datos de sensores a broker (en segundos)
 
-
-#Handler en caso suceda la conexion con el broker MQTT
+# LARP Handler en caso suceda la conexion con el broker MQTT
 def on_connect(client, userdata, flags, rc):
     connectionText = "CONNACK recibido del broker con codigo: " + str(rc)
     logging.info(connectionText)
 
-#Handler en caso se publique satisfactoriamente en el broker MQTT
+# LARP Handler en caso se publique satisfactoriamente en el broker MQTT
 def on_publish(client, userdata, mid):
     publishText = "Publicacion satisfactoria"
     logging.debug(publishText)
@@ -67,9 +75,9 @@ logging.info("Cliente MQTT con paho-mqtt") #Mensaje en consola
 '''
 Config. inicial del cliente MQTT
 '''
-client = paho.Client(clean_session=True) #Nueva instancia de cliente
-client.on_connect = on_connect #Se configura la funcion "Handler" cuando suceda la conexion
-client.on_publish = on_publish #Se configura la funcion "Handler" que se activa al publicar algo
+client = paho.Client(clean_session=True) # LARP Nueva instancia de cliente
+client.on_connect = on_connect # LARP Se configura la funcion "Handler" cuando suceda la conexion
+client.on_publish = on_publish # LARP Se configura la funcion "Handler" que se activa al publicar algo
 client.on_message = on_message
 client.username_pw_set(MQTT_USER, MQTT_PASS) #Credenciales requeridas por el broker
 client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
