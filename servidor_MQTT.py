@@ -16,7 +16,7 @@ usuarios='topics_usuarios.txt' # MGHP variable que representa el archivo donde s
 
 
 
-#funcion que guarda la informacion recibida de los alives.
+#funcion que guarda la informacion recibida de los TOPICS.
 def recepcion(topic,contenidom):
     logging.info("si estoy en la funcion")
 
@@ -94,11 +94,11 @@ def llama_usuarios(): # MGHP funcion que se encarga de crear una lista para pode
     for i in datos:
         logging.info(i[:])
 
-    #dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
+    #MGHP dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
     logging.info("estamos subcritos a los siguiente topics: \n")
     for j in range(len(registro)):
         client.subscribe((CLIENTES+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
-        logging.info(str(j)+" " +CLIENTES+str(registro[j]))
+        logging.info(str(j)+" " +CLIENTES+str(registro[j]))# MGHP mostramos a que topics estamos susbcritos de los clientes
 
 
 llama_usuarios() #MGHP llama a la funcion que extrae la informacion del documento donde estan los clientes
