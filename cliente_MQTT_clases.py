@@ -5,6 +5,7 @@ from broker_MQTT_datos import * #Informacion de la conexion
 import binascii #GAMS
 import os   # LARP para utilizar la consola, enviar comandos
 import time # LARP libreria para definir nombre en formato timestamp UNIX (epoch) #Retardos
+import threading
 
 TOPICS_AUDIO= "audio/20/" #MGHP parte inicial del TOPIC donde se recibiran los audios
 TOPICS_CHAT="usuario/12/"
@@ -54,7 +55,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             archivo = open(nombre, 'wb') #LARP apertura y creacion del archivo de audio
             archivo.write(la_info) # LARP Los bloques se van agregando al archivo
             t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
-                                target = clienteMQTT.hiloReproducion,
+                                target = self.hiloReproducion,
                                 args = ((nombre, 31)),
                                 daemon = True
                                 )
