@@ -91,7 +91,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     # LARP funcion llamada desde afuera proveniente de la clase cliente MQTT para publicar
     def Send_comando(self, topicRoot,topicName,value):
         topic = str(topicRoot) + "/12/" + str(topicName.decode("utf-8"))
-        logging.info(str(topic))
+        logging.debug(str(topic))
         client.publish(topic, value, qos = 0, retain = False)
 
 class tiempoInvalido(Exception):
@@ -116,7 +116,7 @@ class noPertenecesAsala(Exception):
 # LARP Handler en caso suceda la conexion con el broker MQTT
 def on_connect(client, userdata, flags, rc):
     connectionText = "CONNACK recibido del broker con codigo: " + str(rc)
-    logging.info(connectionText)
+    logging.debug(connectionText)
 
 # LARP Handler en caso se publique satisfactoriamente en el broker MQTT
 def on_publish(client, userdata, mid):

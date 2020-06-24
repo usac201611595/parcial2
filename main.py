@@ -33,11 +33,13 @@ def GrabadrAudio(time,receptor):#GAMS
         logging.info("grabacion enviada")#GAMS
         f.close()#GAMS
 
-def warningC(data1):
-    if isinstance(data1,int) and data < 30:
-        pass
-    else:
-        logging.warning('El valor que ingreso no es valido')
+"""def warningC(data1):
+                if isinstance(data,int) and data < 30:
+                    usuario.Send_comando(salaxx,b.encode("utf-8") ,USERID.decode("utf-8")+"$"+'Recibiendo audio...')#GAMS
+                    GrabadrAudio(data,b)
+                    logging.info('\nEnviando a: {!s}'.format(N))#GAMS
+                else:
+                    logging.warning('El valor que ingreso no es valido')"""
 
 temporal = str(usuario.user_id[0])
 USERID = temporal.encode("utf-8")
@@ -46,37 +48,35 @@ cnt = 0
 try:
     
     while True: #GAMS
+        time.sleep(1)
     #------------------------tratamineto de mensajes -------------------------------------------
-        N=input('\nSi desea enviar mensaje escriba: "a" \nSi desea enviar audio escriba: "b", \nSi desea salir escriba:"E" :')#GAMS
+        N=input('\nSi desea enviar mensaje escriba : "a" \nSi desea enviar audio escriba: "b" \nSi desea salir escriba:"E" : \n')#GAMS
         if N=="a" or N=="A":#GAMS
-            N=input('\n Si desea escribir a usuario coloque:"a", \nSi desea escribir a sala coloque:"b" :')#GAMS
+            N=input('\nSi desea escribir a usuario coloque:"a" \nSi desea escribir a sala coloque:"b" : \n')#GAMS
             if N=="a" and N == "A" : #GAMS
-                N=input("\nEscriba Usuario de destino (Ejemplo: 201112345 ):")#GAMS
+                N=input("\nEscriba Usuario de destino (Ejemplo: 201112345 ): \n")#GAMS
                 data=input("Mensaje :")#GAMS
                 usuario.Send_comando(user,N.encode("utf-8"),USERID.decode("utf-8")+"$"+data)#GAMS
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
             elif N=="b":#GAMS
-                N=input("Escriba No. de sala (Ejemplo : 01-99):")#GAMS
+                N=input("Escriba No. de sala (Ejemplo : 01-99): ")#GAMS
                 b="12S"+N
                 data=input("Escriba el mensaje que desea enviar: ")#GAMS#GAMS
-                print(b)
                 usuario.Send_comando(salaxx, b.encode("utf-8"), USERID.decode("utf-8")+"$"+data)#GAMS
-                logging.info('\n Enviando a: {!s}'.format(N))#GAMS
+                logging.info('\nEnviando a sala: {!s}'.format(N))#GAMS
         elif N=="b" or N=="B":#GAMS
     #-------------------------tratamiento de audio-------------------------------------------
-            N=input('\n Si desea enviar a usuario escriba "a" \nSi desea enviar a sala escriba "b": ')#GAMS
+            N=input('\nSi desea enviar a usuario escriba "a" \nSi desea enviar a sala escriba "b": ')#GAMS
             if N=="a":#GAMS
-                N=input("\nEscriba Usuario de destino (Ejemplo: 201112345 ): ")#GAMS
+                N=input("\nEscriba Usuario de destino (Ejemplo: 201112345): ")#GAMS
                 data=input("Ingrese el tiempo a grabar (maximo 30 segundos): ")#GAMS
-                warningC(data)
-                usuario.Send_comando(user,N.encode("utf-8"),USERID.decode("utf-8")+"$"+'Recibiendo audio...')#GAMS
-                GrabadrAudio(data,N)
+                usuario.Send_comando(salaxx,b.encode("utf-8") ,USERID.decode("utf-8")+"$"+'Recibiendo audio...')#GAMS
+                GrabadrAudio(data,b)
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
             if N=="b":#GAMS
                 N=input("Escriba No. de sala (Ejemplo : 01-99):")#GAMS
                 b="12S"+N
                 data=input("Ingrese el tiempo a grabar (maximo 30 segundos): ")#GAMS
-                warningC(data)
                 usuario.Send_comando(salaxx,b.encode("utf-8") ,USERID.decode("utf-8")+"$"+'Recibiendo audio...')#GAMS
                 GrabadrAudio(data,b)
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
