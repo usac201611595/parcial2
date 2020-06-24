@@ -23,11 +23,11 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     # LARP que valores de inicio ? CONSTANTES: USER ID, LISTA DE LAS SALAS A LAS QUE PERTENECE, UNA LISTA DE OTROS USUARIOS 
                                                                                             # (puede publicar a cualquiera)
     def __init__(self): # LARP valores de entrada que no cambiaran y seran globales
-        self.user_id =  self.quienSoy('usuario.txt')[0]
-        self.lista_sala = SALAS
-        pass
+        self.user_id =  self.leerArchivos('usuario.txt')[0] # LARP tu usario
+        self.lista_sala = self.leerArchivos('salas.txt') # LARP la lista de salas
+        self.lista_usuarios = self.leerArchivos('usuarios.txt') # LARP la lista de usuarios
     
-    def quienSoy(self, archivo1):
+    def leerArchivos(self, archivo1):
         datos = []
         archivo = open( archivo1, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
         for linea in archivo:
@@ -90,7 +90,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
         return datos
 
     # LARP funcion llamada desde afuera proveniente de la clase cliente MQTT para publicar
-    def Send_comando(topicRoot,topicName,value):
+    def Send_comando(self, topicRoot,topicName,value):
         topic = str(topicRoot) + "/12/" + str(topicName.decode("utf-8"))
         client.publish(topic, value, qos = 0, retain = False)
 
