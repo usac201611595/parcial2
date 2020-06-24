@@ -73,10 +73,8 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     #Loop principal: leer los datos de los sensores y enviarlos al broker en los topics adecuados cada cierto tiempo
     #try:
     
-    def llama_subscripciones(self, topicsss,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
-        qos = 2
+    def llama_subscripciones(self, topicsss ,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
         datos=[]
-        topicsss
         """ archivo = open(contenidos, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
         for linea in archivo:
             registro=linea.split(',')
@@ -89,6 +87,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             self.subscribirVar( topicsss, self.lista_sala)
 
     def subscribirVar(self, topic1, userSala):
+        qos = 2
         #MGHP dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
         for j in range(len(userSala)):
             client.subscribe((topic1+str(userSala[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
@@ -146,15 +145,16 @@ client.on_message = on_message
 client.username_pw_set(MQTT_USER, MQTT_PASS) #Credenciales requeridas por el broker
 client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 
+usuario = clienteMQTT()
 
 logging.info("subscribiendo a topics: ")
 logging.info("PARA AUDIO: ")
 #llama a la funcion que extrae la informacion de los documentos que contienen las salas y usuarios
-clienteMQTT.llama_subscripciones(TOPICS_AUDIO,usuarios) #MGHP se subscribe a rececpion de audios de usuarios
-clienteMQTT.llama_subscripciones(TOPICS_AUDIO,salas) #MGHP se subcribe recepcion de audios en salas
+usuario.llama_subscripciones(TOPICS_AUDIO,usuarios) #MGHP se subscribe a rececpion de audios de usuarios
+usuario.llama_subscripciones(TOPICS_AUDIO,salas) #MGHP se subcribe recepcion de audios en salas
 logging.info("PARA CHAT: ")
-clienteMQTT.llama_subscripciones(TOPICS_CHAT,usuarios)#MGHP se subscribe a recepcion de chats en usuarios
-clienteMQTT.llama_subscripciones(TOPICS_CHAT,salas)#MGHP se subscribe a recepcion de chats en salas.
+usuario.llama_subscripciones(TOPICS_CHAT,usuarios)#MGHP se subscribe a recepcion de chats en usuarios
+usuario.llama_subscripciones(TOPICS_CHAT,salas)#MGHP se subscribe a recepcion de chats en salas.
 
 logging.info("subscripcion exitosa")
 client.loop_start()
