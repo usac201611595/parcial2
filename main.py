@@ -45,23 +45,27 @@ try:
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
             elif N=="b":#GAMS
                 N=input("No. sala :")#GAMS
+                b="12S"+N
                 data=input("Mensaje :")#GAMS#GAMS
-                usuario.Send_comando(user,N.encode("utf-8"),USERID.decode("utf-8")+"$"+data)#GAMS
+                print(b)
+                usuario.Send_comando(salaxx, b.encode("utf-8"), USERID.decode("utf-8")+"$"+data)#GAMS
                 logging.info('\n Enviando a: {!s}'.format(N))#GAMS
         elif N=="b" or N=="B":#GAMS
     #-------------------------tratamiento de audio-------------------------------------------
             N=input('\n desea enviar a usuario escriba "a" o sala escriba "b" :')#GAMS
             if N=="a":#GAMS
-                N=input("\ncaré destino :")#GAMS
+                N=input("\ncarné destino :")#GAMS
                 data=input("tiempo a grabar(segundos) :")#GAMS
                 usuario.Send_comando(user,N.encode("utf-8"),USERID.decode("utf-8")+"$"+data)#GAMS
                 GrabadrAudio(data,N)
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
-            if N=="a":#GAMS
-                N=input("\ncaré destino :")#GAMS
+            if N=="b":#GAMS
+                N=input("\n sala destino :")#GAMS
+                b="12S"+N
                 data=input("tiempo a grabar(segundos) :")#GAMS
-                usuario.Send_comando(user,N.encode("utf-8"),USERID.decode("utf-8")+"$"+data)#GAMS
-                GrabadrAudio(data,N)
+                usuario.Send_comando(salaxx,b.encode("utf-8") ,USERID.decode("utf-8")+"$"+data)#GAMS
+                print("pasa")
+                GrabadrAudio(data,b)
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
         elif N=="e" or N=="E":#GAMS
             break#GAMS

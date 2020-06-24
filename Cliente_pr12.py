@@ -11,7 +11,7 @@ C_NO = b'\x07' # LARP 'indicador' de NEGACION, a) si el REMITENTE o DESTINO no s
 
 #System filenames
 USERID= b'201611595'#GAMS
-sala='sala'
+salaxx='salas'
 user='usuario'
 comando='comandos'
 audio='audio'

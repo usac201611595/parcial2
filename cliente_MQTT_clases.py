@@ -7,7 +7,7 @@ import os   # LARP para utilizar la consola, enviar comandos
 import time # LARP libreria para definir nombre en formato timestamp UNIX (epoch) #Retardos
 import threading
 
-TOPICS_AUDIO= "audio/20/" #MGHP parte inicial del TOPIC donde se recibiran los audios
+TOPICS_AUDIO= "audio/12/" #MGHP parte inicial del TOPIC donde se recibiran los audios
 TOPICS_CHAT="usuario/12/"
 TOPICS_SALA="salas/12/"
 #MGHP nombre del archivo que contiene a los usuarios
@@ -53,14 +53,17 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             archivo = open(nombre, 'wb') #LARP apertura y creacion del archivo de audio
             archivo.write(la_info) # LARP Los bloques se van agregando al archivo
             t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
-                                target = clienteMQTT.hiloReproducion,
+                                target = self.hiloReproducion,
                                 args = ((nombre, 31)),
                                 daemon = True
                                 )
             t1.start() # LARP inicializacion del hilo
-        else:
+        elif eltopic[0]=="usuario":
             datos2=la_info.split(b'$')
             print(datos2[0].decode("utf-8")+":"+datos2[1].decode("utf-8"))
+        elif eltopic[0]=="salas":
+            datos2=la_info.split(b'$')
+            print("sala "+eltopic[2]+"----"+datos2[0].decode("utf-8")+":"+datos2[1].decode("utf-8"))
 
     def hiloReproducion(self, entrada, num): #LARP 'funcion del hilo Reproduccion de fondo'
         logging.info('Grabacion finalizada, inicia reproduccion') # LARP mensaje al finalizar
@@ -91,6 +94,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     # LARP funcion llamada desde afuera proveniente de la clase cliente MQTT para publicar
     def Send_comando(self, topicRoot,topicName,value):
         topic = str(topicRoot) + "/12/" + str(topicName.decode("utf-8"))
+        logging.info(str(topic))
         client.publish(topic, value, qos = 0, retain = False)
 
 class tiempoInvalido(Exception):
