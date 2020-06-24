@@ -1,0 +1,13 @@
+Archivos .txt
+En los archivos .txt se encuentran los siguientes datos.
+usuario  -> usuario que soy, mi carne, hay que crear varias carpetas cada una con diferente
+		archivo .txt , una carpeta por cada integrante
+usuarios ->  usuarios disponibles a los cuales enviar mensaje
+salas -> salas a las cuales pertenecemos y solo a ellas podemos enviar mensaje
+
+??? A cuales topics nos suscribimos ???
+* A nuestro user-id, nuestro carne, topic = usuario/12/201611595
+			y al de audio, topic = audio/12/201611595
+* A cada una de las salas, topic = sala/12/# (salas subscritas)
+
+
