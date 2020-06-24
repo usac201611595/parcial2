@@ -23,7 +23,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     # LARP que valores de inicio ? CONSTANTES: USER ID, LISTA DE LAS SALAS A LAS QUE PERTENECE, UNA LISTA DE OTROS USUARIOS 
                                                                                             # (puede publicar a cualquiera)
     def __init__(self): # LARP valores de entrada que no cambiaran y seran globales
-        self.user_id =  quienSoy('usuario.txt')
+        self.user_id =  self.quienSoy('usuario.txt')[0]
         self.lista_sala = SALAS
         pass
     
@@ -35,31 +35,31 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             registro[-1]=registro[-1].split('\n')[0]
             datos.append(registro)
         archivo.close()
-        return datos[0]
+        return datos
     
     def recepcion(topic,contenidom):
         logging.info("si estoy en la funcion")
-    #MGHP aqui empezamos a partir la informacion
-    la_info=contenidom
-    eltopic=topic.split('/')
+        #MGHP aqui empezamos a partir la informacion
+        la_info=contenidom
+        eltopic=topic.split('/')
 
-    #daT=Negocia(eltopic,datos2[0],datos2[1].decode("utf-8"))
-    #logging.info(str(daT.ACK()))
-    nombre = '' # LARP variable nombre, definida afuera para que entre en la tupla del hilo
-    if eltopic[0]=="audio": # LARP condicion, si pertenece al topic audios, guarda el audio
-        print("recibiendo auido")
-        nombre = str(int(time.time())) + '.wav' #LARP nombre de archivo, hora actual, timestamp
-        archivo = open(nombre, 'wb') #LARP apertura y creacion del archivo de audio
-        archivo.write(la_info) # LARP Los bloques se van agregando al archivo
-        t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
-                            target = hiloReproducion,
-                            args = ((nombre, 31)),
-                            daemon = True
-                            )
-        t1.start() # LARP inicializacion del hilo
-    else:
-        datos2=la_info.split(b'$')
-        print(datos2[0].decode("utf-8")+":"+datos2[1].decode("utf-8"))
+        #daT=Negocia(eltopic,datos2[0],datos2[1].decode("utf-8"))
+        #logging.info(str(daT.ACK()))
+        nombre = '' # LARP variable nombre, definida afuera para que entre en la tupla del hilo
+        if eltopic[0]=="audio": # LARP condicion, si pertenece al topic audios, guarda el audio
+            print("recibiendo auido")
+            nombre = str(int(time.time())) + '.wav' #LARP nombre de archivo, hora actual, timestamp
+            archivo = open(nombre, 'wb') #LARP apertura y creacion del archivo de audio
+            archivo.write(la_info) # LARP Los bloques se van agregando al archivo
+            t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
+                                target = hiloReproducion,
+                                args = ((nombre, 31)),
+                                daemon = True
+                                )
+            t1.start() # LARP inicializacion del hilo
+        else:
+            datos2=la_info.split(b'$')
+            print(datos2[0].decode("utf-8")+":"+datos2[1].decode("utf-8"))
 
     def hiloReproducion(self, entrada, num): #LARP 'funcion del hilo Reproduccion de fondo'
         logging.info('Grabacion finalizada, inicia reproduccion') # LARP mensaje al finalizar
