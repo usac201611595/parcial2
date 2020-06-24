@@ -7,6 +7,8 @@ import os   # LARP para utilizar la consola, enviar comandos
 import time # LARP libreria para definir nombre en formato timestamp UNIX (epoch) #Retardos
 import threading
 
+USERID= usuario.user_id #GAMS
+
 TOPICS_AUDIO= "audio/12/" #MGHP parte inicial del TOPIC donde se recibiran los audios
 TOPICS_CHAT="usuario/12/"
 TOPICS_SALA="salas/12/"
@@ -16,7 +18,7 @@ salas='salas.txt'
 
 # LARP Configuracion inicial de logging
 logging.basicConfig(
-    level = logging.DEBUG,
+    level = logging.INFO,
     format = '[%(levelname)s] (%(processName)-10s) %(message)s'
     )
 
@@ -30,6 +32,9 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
         self.user_id = a[0] # LARP como devuelve una lista, solo tomo el string de adentro
         self.lista_sala = self.leerArchivos('salas.txt') # LARP la lista de salas
         self.lista_usuarios = self.leerArchivos('usuario.txt') # LARP la lista de usuarios
+
+    def conseguirUser(self):
+        return self.user_id
 
     def leerArchivos(self, archivo1):
         datos = []
@@ -72,12 +77,6 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
 
     def llama_subscripciones(self, topicsss ,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
         datos=[]
-        """ archivo = open(contenidos, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
-        for linea in archivo:
-            registro=linea.split(',')
-            registro[-1]=registro[-1].split('\n')[0]
-            datos.append(registro)
-        archivo.close()"""
         if contenidos == 'usuario.txt':
             self.subscribirVar( topicsss, self.lista_usuarios)
         elif contenidos == 'salas.txt':
