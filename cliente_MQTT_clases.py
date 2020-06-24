@@ -55,7 +55,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             archivo = open(nombre, 'wb') #LARP apertura y creacion del archivo de audio
             archivo.write(la_info) # LARP Los bloques se van agregando al archivo
             t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
-                                target = self.hiloReproducion,
+                                target = clienteMQTT.hiloReproducion,
                                 args = ((nombre, 31)),
                                 daemon = True
                                 )
