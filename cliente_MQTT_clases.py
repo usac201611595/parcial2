@@ -14,7 +14,7 @@ salas='salas.txt'
 
 # LARP Configuracion inicial de logging
 logging.basicConfig(    
-    level = logging.INFO,
+    level = logging.DEBUG,
     format = '[%(levelname)s] (%(processName)-10s) %(message)s'
     )
 
@@ -23,7 +23,9 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     # LARP que valores de inicio ? CONSTANTES: USER ID, LISTA DE LAS SALAS A LAS QUE PERTENECE, UNA LISTA DE OTROS USUARIOS 
                                                                                             # (puede publicar a cualquiera)
     def __init__(self): # LARP valores de entrada que no cambiaran y seran globales
-        self.user_id =  self.leerArchivos('usuario.txt')[0] # LARP tu usario
+        a = []
+        a.append(self.leerArchivos('usuario.txt')) # LARP tu usario
+        self.user_id = a[0] # LARP como devuelve una lista, solo tomo el string de adentro
         self.lista_sala = self.leerArchivos('salas.txt') # LARP la lista de salas
         self.lista_usuarios = self.leerArchivos('usuarios.txt') # LARP la lista de usuarios
     
@@ -35,10 +37,10 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             registro[-1]=registro[-1].split('\n')[0]
             datos.append(registro)
         archivo.close()
-        return datos
+        return datos[0]
     
-    def recepcion(topic,contenidom):
-        logging.info("si estoy en la funcion")
+    def recepcion(self, topic,contenidom):
+        logging.debug("Si estoy en la funcion")
         #MGHP aqui empezamos a partir la informacion
         la_info=contenidom
         eltopic=topic.split('/')
@@ -52,7 +54,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             archivo = open(nombre, 'wb') #LARP apertura y creacion del archivo de audio
             archivo.write(la_info) # LARP Los bloques se van agregando al archivo
             t1 = threading.Thread(name = 'Reproduccion de fondo', #LARP creacion de hilo para reproduccion
-                                target = hiloReproducion,
+                                target = clienteMQTT.hiloReproducion,
                                 args = ((nombre, 31)),
                                 daemon = True
                                 )
@@ -73,21 +75,24 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     def llama_subscripciones(self, topicsss,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
         qos = 2
         datos=[]
-
-        archivo = open(contenidos, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
+        topicsss
+        """ archivo = open(contenidos, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
         for linea in archivo:
             registro=linea.split(',')
             registro[-1]=registro[-1].split('\n')[0]
             datos.append(registro)
-        archivo.close()
-        #for i in datos:
-            #logging.info(i[:])
+        archivo.close()"""
+        if contenidos == 'usuarios.txt':
+            self.subscribirVar( topicsss, self.lista_usuarios)
+        elif contenidos == 'salas.txt':
+            self.subscribirVar( topicsss, self.lista_sala)
+
+    def subscribirVar(self, topic1, userSala):
         #MGHP dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
-        for j in range(len(registro)):
-            client.subscribe((topicsss+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
+        for j in range(len(userSala)):
+            client.subscribe((topic1+str(userSala[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
             client.loop_start()
-            logging.info(topicsss+str(registro[j]))# MGHP mostramos a que topics estamos susbcritos de los clientes
-        return datos
+            logging.info(topic1+str(userSala[j]))# MGHP mostramos a que topics estamos susbcritos de los clientes
 
     # LARP funcion llamada desde afuera proveniente de la clase cliente MQTT para publicar
     def Send_comando(self, topicRoot,topicName,value):
@@ -112,14 +117,6 @@ class noPertenecesAsala(Exception):
     def __repr__(self):
         return self.__str__()
 
-#class Negocia(object):
-#    def __init__(self,topic,contenidom):#GAMS
-#        self.topic=str(topic)#GAMS
-#        self.contenidom = contenidom#GAMSs
-
-
-# Tiempo de espera entre lectura y envio de dato de sensores a broker (en segundos)
-
 """ ==================================# LARP por defecto MQTT =================================== """
 # LARP Handler en caso suceda la conexion con el broker MQTT
 def on_connect(client, userdata, flags, rc):
@@ -133,7 +130,7 @@ def on_publish(client, userdata, mid):
 
 #--------------------------GAMS.----------------------------
 def on_message(client, userdata, msg):
-    recepcion(msg.topic,msg.payload) #MGHP llamo a la funcion para poder partir la informacion
+    clienteMQTT.recepcion(msg.topic,msg.payload) #MGHP llamo a la funcion para poder partir la informacion
 
 """ ================================== #LARP por defecto MQTT =================================== """
 
