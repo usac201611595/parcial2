@@ -8,12 +8,8 @@ import binascii#GAMS
 from cliente_MQTT_clases import *  #GAMS
 from Cliente_pr12 import * ##GAMS importa los parametros de conexion
 
-usuario.conseguirUser()
-
-temporal = usuario.conseguirUser()
-USERID = temporal.encode("utf-8")
-
 usuario = clienteMQTT()
+
 usuario.llama_subscripciones(TOPICS_AUDIO,salas) #MGHP se subcribe recepcion de audios en salas
 usuario.llama_subscripciones(TOPICS_AUDIO,usuarios) #MGHP se subscribe a rececpion de audios de usuarios
 logging.info("PARA CHAT: ")
@@ -43,11 +39,15 @@ def warningC(data1):
     else:
         logging.warning('El valor que ingreso no es valido')
 
+temporal = str(usuario.user_id[0])
+USERID = temporal.encode("utf-8")
+
 cnt = 0
 try:
+    
     while True: #GAMS
     #------------------------tratamineto de mensajes -------------------------------------------
-        N=input('\n Si desea enviar mensaje escriba: "a" \nSi desea enviar audio escriba: "b", \nSi desea salir escriba:"E" :')#GAMS
+        N=input('\nSi desea enviar mensaje escriba: "a" \nSi desea enviar audio escriba: "b", \nSi desea salir escriba:"E" :')#GAMS
         if N=="a" or N=="A":#GAMS
             N=input('\n Si desea escribir a usuario coloque:"a", \nSi desea escribir a sala coloque:"b" :')#GAMS
             if N=="a" and N == "A" : #GAMS

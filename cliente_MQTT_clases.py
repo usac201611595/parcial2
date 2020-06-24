@@ -7,8 +7,6 @@ import os   # LARP para utilizar la consola, enviar comandos
 import time # LARP libreria para definir nombre en formato timestamp UNIX (epoch) #Retardos
 import threading
 
-USERID= usuario.user_id #GAMS
-
 TOPICS_AUDIO= "audio/12/" #MGHP parte inicial del TOPIC donde se recibiran los audios
 TOPICS_CHAT="usuario/12/"
 TOPICS_SALA="salas/12/"
@@ -33,7 +31,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
         self.lista_sala = self.leerArchivos('salas.txt') # LARP la lista de salas
         self.lista_usuarios = self.leerArchivos('usuario.txt') # LARP la lista de usuarios
 
-    def conseguirUser(self):
+    def conseguirUser(self, num):
         return self.user_id
 
     def leerArchivos(self, archivo1):
