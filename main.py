@@ -46,8 +46,8 @@ try:
         if N=="a" or N=="A":#GAMS
             N=input('\nSi desea escribir a usuario coloque:"a" \nSi desea escribir a sala coloque:"b" : \n')#GAMS
             if N=="a" or N == "A" : #GAMS
-                N=input("\nEscriba Usuario de destino (Ejemplo: 201112345): \n")#GAMS
-                data=input("Mensaje :")#GAMS
+                N=input("\nEscriba Usuario de destino (Ejemplo: 201112345): ")#GAMS
+                data=input("Mensaje: ")#GAMS
                 usuario.Send_comando(user,N.encode("utf-8"),USERID.decode("utf-8")+"$"+data)#GAMS
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
             elif N=="b" or N == "B":#GAMS
@@ -56,6 +56,8 @@ try:
                 data=input("Escriba el mensaje que desea enviar: ")#GAMS#GAMS
                 usuario.Send_comando(salaxx, b.encode("utf-8"), USERID.decode("utf-8")+"$"+data)#GAMS
                 logging.info('\nEnviando a sala: {!s}'.format(N))#GAMS
+            else:
+                logging.warning('El valor ingresado no es valido')
         elif N=="b" or N=="B":#GAMS
     #-------------------------tratamiento de audio-------------------------------------------
             N=input('\nSi desea enviar a usuario escriba "a" \nSi desea enviar a sala escriba "b": ')#GAMS
@@ -65,15 +67,19 @@ try:
                 usuario.Send_comando(user,N.encode("utf-8"),USERID.decode("utf-8")+"$"+'Recibiendo audio...')#GAMS
                 GrabadrAudio(data,N)
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
-            if N=="b" or N=="B":#GAMS
-                N=input("Escriba No. de sala (Ejemplo : 01-99):")#GAMS
+            elif N=="b" or N=="B":#GAMS
+                N=input("Escriba No. de sala (Ejemplo : 01-99): ")#GAMS
                 b="12S"+N
                 data=input("Ingrese el tiempo a grabar (maximo 30 segundos): ")#GAMS
                 usuario.Send_comando(salaxx,b.encode("utf-8") ,USERID.decode("utf-8")+"$"+'Recibiendo audio...')#GAMS
                 GrabadrAudio(data,b)
                 logging.info('\nEnviando a: {!s}'.format(N))#GAMS
+            else:
+                logging.warning('El valor ingresado no es valido')
         elif N=="e" or N=="E":#GAMS
             break#GAMS
+        else:
+            logging.warning('El valor ingresado no es valido')
 
 except KeyboardInterrupt:
 

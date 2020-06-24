@@ -91,7 +91,7 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
     # LARP funcion llamada desde afuera proveniente de la clase cliente MQTT para publicar
     def Send_comando(self, topicRoot,topicName,value):
         topic = str(topicRoot) + "/12/" + str(topicName.decode("utf-8"))
-        logging.info(str(topic))
+        logging.debug(str(topic))
         client.publish(topic, value, qos = 0, retain = False)
 
 class tiempoInvalido(Exception):
