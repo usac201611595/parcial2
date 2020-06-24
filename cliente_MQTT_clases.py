@@ -20,11 +20,23 @@ logging.basicConfig(
 
 class clienteMQTT(object): # LARP clase de cliente mqtt
 
-    def __init__(self, ): # LARP valores de entrada que no cambiaran y seran globales
+    # LARP que valores de inicio ? CONSTANTES: USER ID, LISTA DE LAS SALAS A LAS QUE PERTENECE, UNA LISTA DE OTROS USUARIOS 
+                                                                                            # (puede publicar a cualquiera)
+    def __init__(self): # LARP valores de entrada que no cambiaran y seran globales
+        self.user_id =  quienSoy('usuario.txt')
+        self.lista_sala = SALAS
         pass
-
-    def 
-
+    
+    def quienSoy(self, archivo1):
+        datos = []
+        archivo = open( archivo1, 'r') #MGHP abrimos el archivo que contiene la informacion de usuarios o salas
+        for linea in archivo:
+            registro=linea.split(',')
+            registro[-1]=registro[-1].split('\n')[0]
+            datos.append(registro)
+        archivo.close()
+        return datos[0]
+    
     def recepcion(topic,contenidom):
         logging.info("si estoy en la funcion")
     #MGHP aqui empezamos a partir la informacion
@@ -54,8 +66,10 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
         os.system('aplay ' + entrada) #LARP ejecutar en consola con aplay
         time.sleep (num)
     
+    
     #Loop principal: leer los datos de los sensores y enviarlos al broker en los topics adecuados cada cierto tiempo
     #try:
+    
     def llama_subscripciones(self, topicsss,contenidos): # MGHP funcion que se encarga de crear una lista para poder utilizar la informacion de los usuarios
         qos = 2
         datos=[]
@@ -66,6 +80,19 @@ class clienteMQTT(object): # LARP clase de cliente mqtt
             registro[-1]=registro[-1].split('\n')[0]
             datos.append(registro)
         archivo.close()
+        #for i in datos:
+            #logging.info(i[:])
+        #MGHP dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
+        for j in range(len(registro)):
+            client.subscribe((topicsss+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
+            client.loop_start()
+            logging.info(topicsss+str(registro[j]))# MGHP mostramos a que topics estamos susbcritos de los clientes
+        return datos
+
+    # LARP funcion llamada desde afuera proveniente de la clase cliente MQTT para publicar
+    def Send_comando(topicRoot,topicName,value):
+        topic = str(topicRoot) + "/12/" + str(topicName.decode("utf-8"))
+        client.publish(topic, value, qos = 0, retain = False)
 
 class tiempoInvalido(Exception):
     def __init__(self):
@@ -76,19 +103,19 @@ class tiempoInvalido(Exception):
     def __repr__(self):
         return self.__str__()
 
+class noPertenecesAsala(Exception):
+    def __init__(self):
+        pass
+    def __str__(self):
+        return str("No perteneces a esa sala")
+
+    def __repr__(self):
+        return self.__str__()
 
 #class Negocia(object):
 #    def __init__(self,topic,contenidom):#GAMS
 #        self.topic=str(topic)#GAMS
 #        self.contenidom = contenidom#GAMSs
-                                    #)
-#    def alive(self):
-#        t1 = threading.Thread( target = self.s_alive,
-#                                        daemon = True
-#                                        )
-#        t1.start()
-#    def ACK(self):#GAMS
-#        return self.recepcion()[0]==b'x05' and self.recepcion()[1].decode("utf-8")=="201611595" and self.topic=="comandos/12"#GAMS
 
 
 # Tiempo de espera entre lectura y envio de dato de sensores a broker (en segundos)
@@ -121,32 +148,18 @@ client.on_message = on_message
 client.username_pw_set(MQTT_USER, MQTT_PASS) #Credenciales requeridas por el broker
 client.connect(host=MQTT_HOST, port = MQTT_PORT) #Conectar al servidor remoto
 
-    #for i in datos:
-        #logging.info(i[:])
-
-    #MGHP dentro de esta misma funcion nos subscribimos a los usuarios para poder recibir informacion
-
-    for j in range(len(registro)):
-        client.subscribe((topicsss+str(registro[j]),qos))#MGHP subscripcion a cada unos de los usuarios que estan dentrso del archivo
-        client.loop_start()
-        logging.info(topicsss+str(registro[j]))# MGHP mostramos a que topics estamos susbcritos de los clientes
 
 logging.info("subscribiendo a topics: ")
 logging.info("PARA AUDIO: ")
 #llama a la funcion que extrae la informacion de los documentos que contienen las salas y usuarios
-llama_subscripciones(TOPICS_AUDIO,usuarios) #MGHP se subscribe a rececpion de audios de usuarios
-llama_subscripciones(TOPICS_AUDIO,salas) #MGHP se subcribe recepcion de audios en salas
+clienteMQTT.llama_subscripciones(TOPICS_AUDIO,usuarios) #MGHP se subscribe a rececpion de audios de usuarios
+clienteMQTT.llama_subscripciones(TOPICS_AUDIO,salas) #MGHP se subcribe recepcion de audios en salas
 logging.info("PARA CHAT: ")
-llama_subscripciones(TOPICS_CHAT,usuarios)#MGHP se subscribe a recepcion de chats en usuarios
-llama_subscripciones(TOPICS_CHAT,salas)#MGHP se subscribe a recepcion de chats en salas.
+clienteMQTT.llama_subscripciones(TOPICS_CHAT,usuarios)#MGHP se subscribe a recepcion de chats en usuarios
+clienteMQTT.llama_subscripciones(TOPICS_CHAT,salas)#MGHP se subscribe a recepcion de chats en salas.
 
 logging.info("subscripcion exitosa")
 client.loop_start()
-
-    #while True:
-def Send_comando(topicRoot,topicName,value):
-    topic = str(topicRoot) + "/12/" + str(topicName.decode("utf-8"))
-    client.publish(topic, value, qos = 0, retain = False)
 
 #except KeyboardInterrupt:
     #logging.warning("Desconectando del broker MQTT...")
